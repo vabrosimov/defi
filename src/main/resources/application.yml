@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/defi
+    username: defi_app
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: file:db/changelog.xml
+    enabled: false
+
+server:
+  port: 8080
+
+protocol-scrapper-interval-minutes: 1440
+pool-scrapper-interval-minutes: 360
+
+
