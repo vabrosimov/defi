@@ -15,6 +15,7 @@
     <include file="01.pool_ddl.sql" relativeToChangelogFile="true"/>
     <include file="02.protocol_ddl.sql" relativeToChangelogFile="true"/>
     <include file="03.pool_apy_history_ddl.sql" relativeToChangelogFile="true"/>
+    <include file="04.pool_with_apy_history.sql" relativeToChangelogFile="true"/>
 
     <changeSet id="01.00.last" author="Abrosimov V.R.">
         <!-- закрывающий тег релиза, чтобы всегда можно было откатить БД до текущего релиза -->

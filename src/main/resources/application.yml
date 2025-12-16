@@ -6,13 +6,11 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   liquibase:
-    change-log: file:db/changelog.xml
-    enabled: false
+    change-log: classpath:db/migrations/changelog.xml
+    enabled: true
 
 server:
   port: 8080
 
 protocol-scrapper-interval-minutes: 1440
 pool-scrapper-interval-minutes: 360
-
-

@@ -1,8 +1,7 @@
 --liquibase formatted sql
 --changeset Abrosimov V.R.:01.00.02
 
-create table ${schemaName}.protocol (
-    id bigserial primary key,
+create table protocol (
     name varchar not null,
     symbol varchar,
     url varchar,
@@ -15,8 +14,8 @@ create table ${schemaName}.protocol (
     update_ts timestamp default now() not null
 );
 
-create index idx_protocol_chain on ${schemaName}.protocol(chain);
-create index idx_protocol_slug on ${schemaName}.protocol(slug);
+create index idx_protocol_chain on protocol(chain);
+create index idx_protocol_slug on protocol(slug);
 
-alter table ${schemaName}.protocol
+alter table protocol
     add constraint uk_protocol_slug unique (slug);
