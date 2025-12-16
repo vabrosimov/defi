@@ -6,6 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class PoolApyHistory {
+    String pool;
     String project;
     String chain;
     String symbol;

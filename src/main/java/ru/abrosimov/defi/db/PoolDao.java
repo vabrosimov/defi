@@ -19,10 +19,13 @@ public class PoolDao {
 
     public void upsert(List<Pool> pools) {
         String sql = """
-                insert into pool (project, chain, symbol, tvlUsd, ilRisk, apy_base, apy_reward, apy, update_ts)
-                values (:project, :chain, :symbol, :tvlUsd, :ilRisk, :apy_base, :apy_reward, :apy, current_timestamp)
-                on conflict (project, chain, symbol)
+                insert into pool (pool, project, chain, symbol, tvlUsd, ilRisk, apy_base, apy_reward, apy, update_ts)
+                values (:pool, :project, :chain, :symbol, :tvlUsd, :ilRisk, :apy_base, :apy_reward, :apy, current_timestamp)
+                on conflict (pool)
                 do update set
+                    project = excluded.project,
+                    chain = excluded.chain,
+                    symbol = excluded.symbol,
                     tvlUsd = excluded.tvlUsd,
                     ilRisk = excluded.ilRisk,
                     apy_base = excluded.apy_base,
@@ -33,6 +36,7 @@ public class PoolDao {
 
         SqlParameterSource[] batchParams = pools.stream()
                 .map(pool -> new MapSqlParameterSource()
+                        .addValue("pool", pool.getPool())
                         .addValue("project", pool.getProject())
                         .addValue("chain", pool.getChain())
                         .addValue("symbol", pool.getSymbol())

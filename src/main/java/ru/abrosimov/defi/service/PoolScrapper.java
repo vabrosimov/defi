@@ -70,6 +70,7 @@ public class PoolScrapper {
 
     private Pool toPool(JsonNode item) {
         return Pool.builder()
+                .pool(item.path("pool").asText(""))
                 .project(item.path("project").asText(""))
                 .chain(item.path("chain").asText(""))
                 .symbol(item.path("symbol").asText(""))
@@ -83,6 +84,7 @@ public class PoolScrapper {
 
     private PoolApyHistory toPoolApyHistory(Pool pool) {
         return PoolApyHistory.builder()
+                .pool(pool.getPool())
                 .project(pool.getProject())
                 .chain(pool.getChain())
                 .symbol(pool.getSymbol())

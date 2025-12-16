@@ -6,6 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class Pool {
+    String pool;
     String project;
     String chain;
     String symbol;

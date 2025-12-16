@@ -19,12 +19,13 @@ public class PoolApyHistoryDao {
 
     public void insert(List<PoolApyHistory> poolApyHistories) {
         String sql = """
-                insert into pool_apy_history (project, chain, symbol, apy, update_ts)
-                values (:project, :chain, :symbol, :apy, current_timestamp)
+                insert into pool_apy_history (pool, project, chain, symbol, apy, update_ts)
+                values (:pool, :project, :chain, :symbol, :apy, current_timestamp)
                 """;
 
         SqlParameterSource[] batchParams = poolApyHistories.stream()
                 .map(pool -> new MapSqlParameterSource()
+                        .addValue("pool", pool.getPool())
                         .addValue("project", pool.getProject())
                         .addValue("chain", pool.getChain())
                         .addValue("symbol", pool.getSymbol())
