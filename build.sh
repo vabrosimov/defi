@@ -14,7 +14,7 @@ echo
 echo "${PASSWORD}" | docker login -u "${USERNAME}" --password-stdin
 
 # Собираем Docker-образ
-docker build -t "${USERNAME}/defi:latest" .
+docker buildx build --platform linux/amd64 -t "${USERNAME}/defi:latest" .
 
 # Пушим образ
 docker push "${USERNAME}/defi:latest"

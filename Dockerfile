@@ -2,6 +2,6 @@ FROM eclipse-temurin:21-jre-alpine
 
 COPY ./build/libs/defi*.jar app.jar
 
-ENV TZ Europe/Moscow
+ENV TZ=Europe/Moscow
 
-ENTRYPOINT java -jar app.jar -Dlog4j2.formatMsgNoLookups=true
+ENTRYPOINT ["java", "-Dlog4j2.formatMsgNoLookups=true", "-jar", "app.jar"]

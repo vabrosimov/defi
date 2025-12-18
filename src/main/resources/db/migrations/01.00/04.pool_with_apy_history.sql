@@ -12,7 +12,7 @@ select
     p.tvl,
     p.url
 from pool
-         left join defi.protocol p
+         left join protocol p
                    on pool.project = p.slug
          left join pool_apy_history h
                    on h.pool = pool.pool

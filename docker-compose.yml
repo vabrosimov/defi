@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16
@@ -12,7 +10,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U defi_app -d defi"]
       interval: 10s
@@ -25,7 +23,7 @@ services:
           memory: 512M
 
   app:
-    image: vabrosimov/defi:latest
+    image: vabrosimov/defi@sha256:e7c9625aa8cf07e1644ec31d65718e8139c7a51728df13226ad6f1d8d44307dc
     container_name: defi-app
     restart: unless-stopped
     depends_on:
