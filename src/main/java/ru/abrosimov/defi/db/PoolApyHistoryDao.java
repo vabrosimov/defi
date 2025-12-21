@@ -38,6 +38,25 @@ public class PoolApyHistoryDao {
         log.debug("Insert List<PoolApyHistory> to pool_apy_history table:\nUpdate count {}", updateCount);
     }
 
+    public void deletePoolApyHistoriesByPool(List<String> pools) {
+        if (pools == null || pools.isEmpty()) {
+            log.debug("Deleting pool apy histories skipped: pools list is empty");
+            return;
+        }
+
+        String sql = """
+                delete from pool_apy_history
+                where pool in (:pools)
+                """;
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("pools", pools);
+
+        int deletedCount = namedJdbcTemplate.update(sql, params);
+
+        log.debug("Delete pool apy histories from pool_apy_history table:\nDeleted {} rows", deletedCount);
+    }
+
     private double roundApy(double apy) {
         return Math.round(apy * 100.0) / 100.0;
     }

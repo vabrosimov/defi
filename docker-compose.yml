@@ -23,7 +23,7 @@ services:
           memory: 512M
 
   app:
-    image: vabrosimov/defi@sha256:e7c9625aa8cf07e1644ec31d65718e8139c7a51728df13226ad6f1d8d44307dc
+    image: vabrosimov/defi@sha256:53d42dc01ffbd8c331c67ef82e49e67548d0b1b2c2c64f7299961610b98d490c
     container_name: defi-app
     restart: unless-stopped
     depends_on:
@@ -33,6 +33,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/defi
       SPRING_DATASOURCE_USERNAME: defi_app
       SPRING_DATASOURCE_PASSWORD: 123456
+      LOGGING_LEVEL_RU_ABROSIMOV_DEFI: DEBUG
     ports:
       - "8080:8080"
     deploy:
