@@ -1,6 +1,5 @@
 package ru.abrosimov.defi.db;
 
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,11 +8,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.abrosimov.defi.model.Protocol;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Repository
@@ -55,20 +51,6 @@ public class ProtocolDao {
         long updateCount = Arrays.stream(namedJdbcTemplate.batchUpdate(sql, batchParams))
                 .count();
         log.debug("Upsert List<Protocol> to protocol table:\nUpdate count {}", updateCount);
-    }
-
-    public @Nullable Instant getLastUpdateTs() {
-        String sql = """
-            select update_ts
-            from protocol
-            order by update_ts desc
-            limit 1
-            """;
-
-        Timestamp lastUpdateTs = namedJdbcTemplate.queryForObject(sql, Map.of(), Timestamp.class);
-        log.debug("Select lastUpdateTs from protocol table:\nlastUpdateTs {}", lastUpdateTs);
-
-        return lastUpdateTs != null ? lastUpdateTs.toInstant() : null;
     }
 
     public void deleteProtocolsOlderThanHours(long hours) {

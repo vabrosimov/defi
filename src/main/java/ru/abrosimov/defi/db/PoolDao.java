@@ -1,40 +1,21 @@
 package ru.abrosimov.defi.db;
 
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.abrosimov.defi.model.Pool;
 
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 public class PoolDao {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
-
-    private final RowMapper<Pool> mapper = (rs, rowNum) ->
-            Pool.builder()
-                    .pool(rs.getString("pool"))
-                    .project(rs.getString("project"))
-                    .chain(rs.getString("chain"))
-                    .symbol(rs.getString("symbol"))
-                    .tvlUsd(rs.getLong("tvlUsd"))
-                    .ilRisk(rs.getBoolean("ilRisk"))
-                    .apyBase(rs.getDouble("apy_base"))
-                    .apyReward(rs.getDouble("apy_reward"))
-                    .apy(rs.getDouble("apy"))
-                    .build();
 
     public void upsert(List<Pool> pools) {
         String sql = """
@@ -70,20 +51,6 @@ public class PoolDao {
         long updateCount = Arrays.stream(namedJdbcTemplate.batchUpdate(sql, batchParams))
                 .count();
         log.debug("Upsert List<Pool> to pool table:\nUpdate count {}", updateCount);
-    }
-
-    public @Nullable Instant getLastUpdateTs() {
-        String sql = """
-                select update_ts
-                from pool
-                order by update_ts desc
-                limit 1
-                """;
-
-        Timestamp lastUpdateTs = namedJdbcTemplate.queryForObject(sql, Map.of(), Timestamp.class);
-        log.debug("Select lastUpdateTs from pool table:\nlastUpdateTs {}", lastUpdateTs);
-
-        return lastUpdateTs != null ? lastUpdateTs.toInstant() : null;
     }
 
     public List<String> deletePoolsOlderThanHours(long hours) {

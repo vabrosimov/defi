@@ -3,7 +3,6 @@ package ru.abrosimov.defi.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.abrosimov.defi.db.PoolApyHistoryDao;
@@ -12,12 +11,9 @@ import ru.abrosimov.defi.model.Pool;
 import ru.abrosimov.defi.model.PoolApyHistory;
 import ru.abrosimov.defi.rest.DefiLamaClient;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -27,16 +23,9 @@ public class PoolScrapper {
     private final PoolDao poolDao;
     private final PoolApyHistoryDao poolApyHistoryDao;
 
-    @Value("${pool-scrapper-interval-hours}")
-    private long poolScrapperIntervalHours;
-
-    @Scheduled(fixedDelay = 10, initialDelay = 0, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void scrapePools() {
         try {
-            if (!shouldScrape()) {
-                return;
-            }
-
             JsonNode dataNode = defiLamaClient.getPools();
 
             List<Pool> filteredPools = filterPools(dataNode);
@@ -52,26 +41,14 @@ public class PoolScrapper {
         }
     }
 
-    @Scheduled(fixedDelay = 60, initialDelay = 60, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(cron = "0 30 0 * * ?")
     public void deleteOutdatedPools() {
         try {
-            List<String> deletedPools = poolDao.deletePoolsOlderThanHours(poolScrapperIntervalHours * 2);
+            List<String> deletedPools = poolDao.deletePoolsOlderThanHours(24);
             poolApyHistoryDao.deletePoolApyHistoriesByPool(deletedPools);
         } catch (Exception e) {
             log.error("Unexpected error during deleting outdated pools", e);
         }
-    }
-
-    private boolean shouldScrape() {
-        Instant lastUpdateTs = poolDao.getLastUpdateTs();
-
-        if (lastUpdateTs == null) {
-            return true;
-        }
-
-        long hoursSinceLastUpdate = Duration.between(lastUpdateTs, Instant.now()).toHours();
-
-        return hoursSinceLastUpdate >= poolScrapperIntervalHours;
     }
 
     private List<Pool> filterPools(JsonNode dataNode) {
