@@ -3,6 +3,7 @@ package ru.abrosimov.defi.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.abrosimov.defi.db.PoolApyHistoryDao;
@@ -22,6 +23,9 @@ public class PoolScrapper {
     private final DefiLamaClient defiLamaClient;
     private final PoolDao poolDao;
     private final PoolApyHistoryDao poolApyHistoryDao;
+
+    @Value("scrapping-symbols")
+    private List<String> scrappingSymbols;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void scrapePools() {
@@ -72,9 +76,8 @@ public class PoolScrapper {
 
         String symbol = symbolNode.asText();
 
-        return symbol.toLowerCase().contains("eth") ||
-                symbol.toLowerCase().contains("btc") ||
-                symbol.toLowerCase().contains("sol");
+        return scrappingSymbols.stream()
+                .anyMatch(scrappingSymbol -> symbol.toLowerCase().contains(scrappingSymbol));
     }
 
     private Pool toPool(JsonNode item) {
