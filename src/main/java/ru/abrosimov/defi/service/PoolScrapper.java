@@ -24,7 +24,7 @@ public class PoolScrapper {
     private final PoolDao poolDao;
     private final PoolApyHistoryDao poolApyHistoryDao;
 
-    @Value("scrapping-symbols")
+    @Value("${scrapping-symbols}")
     private List<String> scrappingSymbols;
 
     @Scheduled(cron = "0 0 0 * * ?")
